@@ -34,7 +34,11 @@ export default function Transactions() {
   }, []);
 
   const handleTransactionClick = (trxHash: string) => {
-    router.push("/PhishingResult");
+    
+    router.push({
+      pathname: '/PhishingResult',
+      query: { transactionHash: trxHash },
+    })
   };
   return (
     <Box margin={2}>

@@ -9,46 +9,36 @@ import {
   CardContent,
   TextField,
 } from "@mui/material";
+import { LoadingButton } from '@mui/lab';
 import csvDownload from "json-to-csv-export";
 import { useRouter } from "next/router";
 
-const WALLET_ID = "0x00f1c77935ac482fc075b55b5990e86ea40851bb";
-const BASE_URL = "https://api.blockcypher.com/v1/eth/main/";
-
 export default function Home() {
   const [showAlert, setShowAlert] = useState(false);
+  const [walletId, setWalletId] = useState('');
+  const [transactionHash, setTransactionHash] = useState('');
   const router = useRouter();
 
-  const handleCollectData = () => {
-    // fetch(`${BASE_URL}addrs/${WALLET_ID}`)
-    //   .then((response) => response.json())
-    //   .then(async (response) => {
-    //     const transactionRefs = response?.txrefs
-    //     const transactions = await Promise.all(transactionRefs.map((transactionRef: any)=>{
-    //       return fetch(`${BASE_URL}txs/${transactionRef.tx_hash}`)
-    //       .then((response) => response.json())
-    //     }))
-    //     console.log(transactions)
-    //     // const dataToConvert = {
-    //     //   data: json,
-    //     //   filename: 'ip_addresses_report',
-    //     //   delimiter: ',',
-    //     //   // headers: ['IP', "Full Name", "IP Address"]
-    //     // }
-    //     // csvDownload(dataToConvert)
-    //     // setShowAlert(true)
-    //     // setTimeout(() => {
-    //     //   setShowAlert(false)
-    //     // }, 8000);
-    //   });
-  };
-
   const handleSubmitWalletId = () =>{
-    router.push('/Transactions');
+    if(!walletId){
+      alert("Enter a valid wallet id")
+      return
+    }
+    router.push({
+      pathname: '/Transactions',
+      query: { walletId },
+    })
   }
 
   const handleSubmitTrxId = () => {
-    router.push('/PhishingResult');
+    if(!transactionHash){
+      alert("Enter a valid wallet id")
+      return
+    }
+    router.push({
+      pathname: '/PhishingResult',
+      query: { transactionHash },
+    })
   }
 
   return (
@@ -64,6 +54,11 @@ export default function Home() {
           Find phishing in your ethereum transactions.
         </Typography>
       </Box>
+     <Box paddingTop={2} display={"flex"} flex={1}>
+        <Typography variant="h5" component="h5" color={"#61377A"}>
+        Phishing refers to fraudulent attempts to trick users or other participants in the blockchain ecosystem in order to steal confidential data, private keys, or cryptocurrency assets. Similar to phishing attacks in other domains, blockchain network phishing attacks are targeted at individuals who engage with blockchain technology, such as cryptocurrency owners, traders, and blockchain developers.
+        </Typography>
+      </Box>
 
       <Card sx={{ marginTop: 2, borderRadius: 2 }}>
         <CardContent>
@@ -74,8 +69,12 @@ export default function Home() {
             label="Enter the wallet id"
             variant="outlined"
             size="small"
+            value={walletId}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setWalletId(event.target.value);
+            }}
           />
-          <Button variant="outlined" onClick={handleSubmitWalletId} sx={{marginLeft:2}}>Submit</Button>
+          <LoadingButton variant="outlined" onClick={handleSubmitWalletId} sx={{marginLeft:2}}>Submit</LoadingButton>
         </CardContent>
       </Card>
 
@@ -89,8 +88,12 @@ export default function Home() {
             label="Enter the transaction hash"
             variant="outlined"
             size="small"
+            value={transactionHash}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setTransactionHash(event.target.value);
+            }}
           />
-          <Button variant="outlined" onClick={handleSubmitTrxId} sx={{marginLeft:2}}>Submit</Button>
+          <LoadingButton variant="outlined" onClick={handleSubmitTrxId} sx={{marginLeft:2}}>Submit</LoadingButton>
         </CardContent>
       </Card>
     </Box>
